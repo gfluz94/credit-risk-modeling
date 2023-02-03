@@ -1,6 +1,9 @@
 install:
 	pip install --upgrade pip &&\
-	pip install -r requirements.txt
+	pip install -r requirements.txt &&\
+	cd credit-risk-modeling &&\
+	python setup.py install &&\
+	cd ..
 
 format:
 	python3 -m black .

@@ -65,9 +65,9 @@ class BaseTransformer(ABC, BaseEstimator, TransformerMixin):
             Union[pd.DataFrame, Dict[str, Any]]: Dataframe or dictionary with applied transformations to them.
         """
         if isinstance(X, pd.DataFrame):
-            return self._transform_df(X)
+            return self._transform_df(X.copy())
         elif isinstance(X, dict):
-            return self._transform_dict(X)
+            return self._transform_dict(X.copy())
         else:
             raise DataTypeNotAllowedForTransformation(
                 "Accepted types are either a pandas.DataFrame or a python dictionary"

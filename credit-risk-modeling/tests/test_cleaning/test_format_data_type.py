@@ -17,6 +17,13 @@ class TestDatetimeConverter(object):
         with pytest.raises(DataTypeNotAllowedForTransformation):
             base_transformer.transform(np.ones(shape=10))
 
+    def test_transform_raisesFieldNotFound(self, dummy_input_dict: Dict[str, Any]):
+        base_transformer = DatetimeConverter(
+            field_names=["NON_EXISTING_FIELD"], datetime_format="%b-%y"
+        )
+        with pytest.raises(FieldNotFound):
+            base_transformer.transform(dummy_input_dict)
+
     def test_transform_outputsDictionary(self, dummy_input_dict: Dict[str, Any]):
         # OUTPUT
         base_transformer = DatetimeConverter(

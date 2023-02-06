@@ -34,7 +34,7 @@ class TestTimeSinceCalculator(object):
             base_transformer.transform(time_since_input_dict)
 
     def test_transform_raisesTimeUnitNotAvailable(
-        self, time_since_input_dict: Dict[str, Any]
+        self
     ):
         with pytest.raises(TimeUnitNotAvailable):
             _ = TimeSinceCalculator(

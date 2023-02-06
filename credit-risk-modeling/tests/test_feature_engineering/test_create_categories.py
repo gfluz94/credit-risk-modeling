@@ -28,7 +28,8 @@ class TestOHECategoriesCreator(object):
 
     def test_transform_raisesFieldNotFound(self, dummy_input_dict: Dict[str, Any]):
         base_transformer = OHECategoriesCreator(
-            field_name="NON_EXISTING_FIELD", final_categories_dict=self._FINAL_CATEGORIES
+            field_name="NON_EXISTING_FIELD",
+            final_categories_dict=self._FINAL_CATEGORIES,
         )
         with pytest.raises(FieldNotFound):
             base_transformer.transform(dummy_input_dict)

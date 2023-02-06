@@ -27,7 +27,7 @@ class BaseTransformer(ABC, BaseEstimator, TransformerMixin):
         pass
 
     @abstractmethod
-    def _transform_dict(self, X: Dict[str, Any]) -> Dict[str, Any]:
+    def _transform_dict(self, X: Dict[str, Any], **kwargs) -> Dict[str, Any]:
         """Method to apply transformations to a dictionary.
 
         Args:
@@ -51,7 +51,7 @@ class BaseTransformer(ABC, BaseEstimator, TransformerMixin):
         pass
 
     def transform(
-        self, X: Union[pd.DataFrame, Dict[str, Any]]
+        self, X: Union[pd.DataFrame, Dict[str, Any]], **kwargs
     ) -> Union[pd.DataFrame, Dict[str, Any]]:
         """Method to wrap input type specific transformation methods.
 
@@ -67,7 +67,7 @@ class BaseTransformer(ABC, BaseEstimator, TransformerMixin):
         if isinstance(X, pd.DataFrame):
             return self._transform_df(X.copy())
         elif isinstance(X, dict):
-            return self._transform_dict(X.copy())
+            return self._transform_dict(X.copy(), **kwargs)
         else:
             raise DataTypeNotAllowedForTransformation(
                 "Accepted types are either a pandas.DataFrame or a python dictionary"

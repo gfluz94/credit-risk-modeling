@@ -99,13 +99,20 @@ class TimeSinceCalculator(BaseTransformer):
         X[self._output_name] = (
             self._reference_date - X[self._field_name]
         ) / np.timedelta64(1, TimeUnit.__members__[self._time_unit].value)
+        if self._winsorize_max:
+            X.loc[X[self._output_name] < 0, self._output_name] = X[
+                self._output_name
+            ].max()
         return X
 
-    def _transform_dict(self, X: Dict[str, Any]) -> Dict[str, Any]:
+    def _transform_dict(
+        self, X: Dict[str, Any], clip_value: float = 0.0
+    ) -> Dict[str, Any]:
         """Transform method for python dictionary
 
         Args:
             X (Dict[str, Any]): Input dictionary containing features
+            clip_value(float, optional): Value to replace negative/invalid ones. Defaults to 0.
 
         Raises:
             FieldNotFound: Name of fields must be found in dictionary
@@ -120,4 +127,6 @@ class TimeSinceCalculator(BaseTransformer):
         ) / np.timedelta64(1, TimeUnit.__members__[self._time_unit].value).astype(
             "timedelta64[us]"
         )
+        if self._winsorize_max:
+            X[self._output_name] = max(X[self._output_name], clip_value)
         return X

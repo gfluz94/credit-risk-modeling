@@ -6,7 +6,7 @@ long_description = """
 """
 
 setuptools.setup(
-    name="",
+    name="credit_risk_modeling",
     version="0.0.1",
     author="Gabriel Fernandes Luz",
     author_email="gfluz94@gmail.com",

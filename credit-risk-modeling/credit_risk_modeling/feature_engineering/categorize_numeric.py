@@ -63,8 +63,10 @@ class NumericCategoriesCreator(BaseTransformer):
         """
         if self._field_name not in X.columns:
             raise FieldNotFound(f"{self._field_name} is not in the dataframe!")
-        for lower, upper in zip(self._boundaries, self._boundaries[1:]):
-            X[f"{self._field_name}_{lower-1}-{upper}"] = (
+        for i, (lower, upper) in enumerate(zip(self._boundaries, self._boundaries[1:])):
+            if i == 0:
+                lower -= 1
+            X[f"{self._field_name}_{lower+1}-{upper}"] = (
                 (X[self._field_name] > lower) & (X[self._field_name] <= upper)
             ).astype(float)
         X = X.drop(columns=[self._field_name])
@@ -83,9 +85,11 @@ class NumericCategoriesCreator(BaseTransformer):
             Dict[str, Any]: Output dictionary containing transformed features
         """
         if self._field_name not in X.keys():
-            raise FieldNotFound(f"{self._field_name} is not in the dataframe!")
-        for lower, upper in zip(self._boundaries, self._boundaries[1:]):
-            X[f"{self._field_name}_{lower-1}-{upper}"] = float(
+            raise FieldNotFound(f"{self._field_name} is not in the dictionary keys!")
+        for i, (lower, upper) in enumerate(zip(self._boundaries, self._boundaries[1:])):
+            if i == 0:
+                lower -= 1
+            X[f"{self._field_name}_{lower+1}-{upper}"] = float(
                 (X[self._field_name] > lower) and (X[self._field_name] <= upper)
             )
         del X[self._field_name]

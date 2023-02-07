@@ -24,7 +24,7 @@ class BaseTransformer(ABC, BaseEstimator, TransformerMixin):
             X (pd.DataFrame): Dataframe containing features.
             y (Optional[pd.Series], optional): In case, target variable needs to be used in the logic. Defaults to None.
         """
-        pass
+
 
     @abstractmethod
     def _transform_dict(self, X: Dict[str, Any], **kwargs) -> Dict[str, Any]:
@@ -36,7 +36,7 @@ class BaseTransformer(ABC, BaseEstimator, TransformerMixin):
         Returns:
             Dict[str, Any]: Dictionary with trasformartions applied to it.
         """
-        pass
+
 
     @abstractmethod
     def _transform_df(self, X: pd.DataFrame) -> pd.DataFrame:
@@ -48,7 +48,7 @@ class BaseTransformer(ABC, BaseEstimator, TransformerMixin):
         Returns:
             pd.DataFrame: Dataframe with trasformartions applied to it.
         """
-        pass
+
 
     def transform(
         self, X: Union[pd.DataFrame, Dict[str, Any]], **kwargs

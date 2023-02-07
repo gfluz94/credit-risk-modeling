@@ -64,7 +64,7 @@ class DatetimeConverter(BaseTransformer):
             X[field_name] = pd.to_datetime(X[field_name], format=self._datetime_format)
         return X
 
-    def _transform_dict(self, X: Dict[str, Any]) -> Dict[str, Any]:
+    def _transform_dict(self, X: Dict[str, Any], **kwargs) -> Dict[str, Any]:
         """Transform method for python dictionary
 
         Args:

@@ -1,7 +1,6 @@
 __all__ = ["NumericExtractor"]
 
 from typing import Any, Dict, List, Optional
-from datetime import datetime
 import re
 import pandas as pd
 
@@ -89,7 +88,7 @@ class NumericExtractor(BaseTransformer):
         ].astype(int)
         return X
 
-    def _transform_dict(self, X: Dict[str, Any]) -> Dict[str, Any]:
+    def _transform_dict(self, X: Dict[str, Any], **kwargs) -> Dict[str, Any]:
         """Transform method for python dictionary
 
         Args:

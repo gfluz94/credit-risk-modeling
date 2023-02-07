@@ -107,7 +107,7 @@ class TimeSinceCalculator(BaseTransformer):
         return X
 
     def _transform_dict(
-        self, X: Dict[str, Any], clip_value: float = 0.0
+        self, X: Dict[str, Any], clip_value: float = 0.0, **kwargs
     ) -> Dict[str, Any]:
         """Transform method for python dictionary
 

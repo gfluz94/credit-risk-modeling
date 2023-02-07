@@ -1,14 +1,10 @@
 __all__ = ["OHECategoriesCreator"]
 
 from typing import Any, Dict, Optional
-from enum import Enum
-from datetime import datetime
 import pandas as pd
-import numpy as np
 
 from credit_risk_modeling.base.estimator import BaseTransformer
 from credit_risk_modeling.exceptions.cleaning import FieldNotFound
-from credit_risk_modeling.exceptions.feature_engineering import TimeUnitNotAvailable
 
 
 class OHECategoriesCreator(BaseTransformer):
@@ -40,14 +36,9 @@ class OHECategoriesCreator(BaseTransformer):
         return self._field_name
 
     @property
-    def final_categories_dict(self) -> str:
-        """(datetime) Reference date against which time elapsed is compute"""
+    def final_categories_dict(self) -> Dict[str, str]:
+        """(Dict[str, str]): Mapping from final category to groupped categories"""
         return self._final_categories_dict
-
-    @property
-    def time_unit(self) -> str:
-        """(Dict[str, str]) Mapping from final category to groupped categories"""
-        return self._time_unit
 
     def fit(self, X: pd.DataFrame, y: Optional[pd.Series] = None):
         """Fit for the transformation
@@ -79,14 +70,11 @@ class OHECategoriesCreator(BaseTransformer):
         X = X.drop(columns=[self._field_name])
         return X
 
-    def _transform_dict(
-        self, X: Dict[str, Any], clip_value: float = 0.0
-    ) -> Dict[str, Any]:
+    def _transform_dict(self, X: Dict[str, Any]) -> Dict[str, Any]:
         """Transform method for python dictionary
 
         Args:
             X (Dict[str, Any]): Input dictionary containing features
-            clip_value(float, optional): Value to replace negative/invalid ones. Defaults to 0.
 
         Raises:
             FieldNotFound: Name of fields must be found in dictionary

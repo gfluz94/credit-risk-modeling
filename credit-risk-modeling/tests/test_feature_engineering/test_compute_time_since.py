@@ -33,9 +33,7 @@ class TestTimeSinceCalculator(object):
         with pytest.raises(FieldNotFound):
             base_transformer.transform(time_since_input_dict)
 
-    def test_transform_raisesTimeUnitNotAvailable(
-        self
-    ):
+    def test_transform_raisesTimeUnitNotAvailable(self):
         with pytest.raises(TimeUnitNotAvailable):
             _ = TimeSinceCalculator(
                 field_name="earliest_cr_line",
@@ -56,7 +54,7 @@ class TestTimeSinceCalculator(object):
 
         # EXPECTED
         expected = time_since_input_dict.copy()
-        expected["months_since_earliest_cr_line"] = 274.9953797819257
+        expected["months_since_earliest_cr_line"] = 274
 
         # ASSERT
         expected == output
@@ -73,7 +71,7 @@ class TestTimeSinceCalculator(object):
 
         # EXPECTED
         expected = pd.DataFrame([time_since_input_dict])
-        expected["months_since_earliest_cr_line"] = 274.9953797819257
+        expected["months_since_earliest_cr_line"] = 274
 
         # ASSERT
         pd.testing.assert_frame_equal(expected, output)

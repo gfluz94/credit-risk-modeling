@@ -99,6 +99,7 @@ class TimeSinceCalculator(BaseTransformer):
         X[self._output_name] = (
             self._reference_date - X[self._field_name]
         ) / np.timedelta64(1, TimeUnit.__members__[self._time_unit].value)
+        X[self._output_name] = X[self._output_name].astype(int)
         if self._winsorize_max:
             X.loc[X[self._output_name] < 0, self._output_name] = X[
                 self._output_name
@@ -129,4 +130,5 @@ class TimeSinceCalculator(BaseTransformer):
         )
         if self._winsorize_max:
             X[self._output_name] = max(X[self._output_name], clip_value)
+        X[self._output_name] = int(X[self._output_name])
         return X

@@ -26,8 +26,6 @@ def test_compute_woe():
     )
     woe_values.index.names = ["education"]
     information_value = 0.06359887667199968
-    print(woe_values)
-    print(output.WoE)
 
     # ASSERT
     pd.testing.assert_series_equal(

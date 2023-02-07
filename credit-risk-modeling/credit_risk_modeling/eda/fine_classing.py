@@ -18,7 +18,7 @@ def get_fine_classes(s: pd.Series, n_buckets: int) -> Tuple[pd.Series, Tuple[int
     s_intervals = pd.cut(s, bins=n_buckets)
     s_ordered = pd.cut(s, bins=n_buckets, labels=np.arange(n_buckets))
     categories = s_intervals.cat.categories
-    min_value = int(categories[0].left) - 1
+    min_value = int(categories[0].left)
     max_value = int(categories[-1].right) + 1
 
     output = pd.concat([s_ordered, s_intervals.astype(str)], axis=1)

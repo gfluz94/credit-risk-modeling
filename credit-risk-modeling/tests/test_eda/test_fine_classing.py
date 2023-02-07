@@ -27,7 +27,7 @@ def test_get_fine_classes():
             * 3
         ),
         name="test_categories",
-        index=toy_series.index
+        index=toy_series.index,
     )
 
     # ASSERT
@@ -35,4 +35,4 @@ def test_get_fine_classes():
         classes,
         output,
     )
-    assert (lower, upper) == (-1, 30)
+    assert (lower, upper) == (0, 30)

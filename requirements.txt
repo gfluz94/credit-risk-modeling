@@ -10,3 +10,4 @@ seaborn==0.12.2
 tqdm==4.64.1
 dill==0.3.6
 jupyter==1.0.0
+statsmodels==0.13.5

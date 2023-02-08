@@ -22,7 +22,8 @@ def get_fine_classes(s: pd.Series, n_buckets: int) -> Tuple[pd.Series, Tuple[int
     max_value = int(categories[-1].right) + 1
 
     output = pd.concat([s_ordered, s_intervals.astype(str)], axis=1)
+    output.iloc[:, 0] = output.iloc[:, 0].astype(int)
     output[f"{s.name}_categories"] = output.apply(
-        lambda x: f"{x.iloc[0]:02d}. {x.iloc[-1]}", axis=1
+        lambda x: f"{x.iloc[0]:03d}. {x.iloc[-1]}", axis=1
     )
     return output[f"{s.name}_categories"], (min_value, max_value)

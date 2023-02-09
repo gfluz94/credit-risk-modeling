@@ -57,3 +57,9 @@ def scores_and_true_labels() -> pd.DataFrame:
             "pd": np.random.rand(100),
         }
     )
+
+
+@pytest.fixture(scope="module")
+def probabilities_of_default() -> np.ndarray:
+    np.random.seed(99)
+    return np.round(np.linspace(0, 1, 21), 2)

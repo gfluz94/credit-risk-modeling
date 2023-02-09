@@ -35,6 +35,11 @@ class NumericWinsorizer(BaseTransformer):
         self._upper = upper
 
     @property
+    def field_name(self) -> str:
+        """(str) Name of field containing current categories"""
+        return self._field_name
+
+    @property
     def lower(self) -> Optional[float]:
         """(float) Lower value to be considered"""
         return self._lower

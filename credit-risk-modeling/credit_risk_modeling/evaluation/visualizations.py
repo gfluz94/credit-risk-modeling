@@ -122,9 +122,9 @@ def plot_ks_curve(
         eval_artifacts_path (bool, optional): Path to where curves should be dumped to. Defaults to current folder.
     """
     label_col = target_name.capitalize()
-    probability_col = f"Probability of {target_name}"
-    default_pct_col = f"% {target_name}"
-    non_default_pct_col = f"% Non-{target_name}"
+    probability_col = f"Probability of {label_col}"
+    default_pct_col = f"% {label_col}"
+    non_default_pct_col = f"% Non-{label_col}"
 
     probabilities_and_labels_train = pd.DataFrame(
         {
@@ -145,7 +145,7 @@ def plot_ks_curve(
         - probabilities_and_labels_train[default_pct_col]
     )
 
-    fig, ax = plt.subplots(1, 1, figsize=(15, 4))
+    fig, ax = plt.subplots(1, 1, figsize=(10, 4))
     plt.plot(
         probabilities_and_labels_train[probability_col],
         probabilities_and_labels_train[default_pct_col],

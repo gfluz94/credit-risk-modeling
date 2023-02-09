@@ -11,13 +11,12 @@ logging.basicConfig(
 logger = logging.getLogger()
 
 import warnings
+
 warnings.filterwarnings("ignore")
 
 
 if __name__ == "__main__":
-    parser = ArgumentParser(
-        description="Input parameters for training a PD model."
-    )
+    parser = ArgumentParser(description="Input parameters for training a PD model.")
     parser.add_argument(
         "--data-filepath",
         metavar="N",

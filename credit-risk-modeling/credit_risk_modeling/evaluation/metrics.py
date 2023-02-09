@@ -25,6 +25,7 @@ def get_metrics_for_threshold(
         Dict[str, float]: Metric name and corresponding metric value
     """
     y_pred = (y_proba > threshold) * 1.0
+    n_predicted = y_pred.sum()
     recall = recall_score(y_true, y_pred)
     precision = precision_score(y_true, y_pred)
     f1 = (
@@ -35,6 +36,7 @@ def get_metrics_for_threshold(
     auc = roc_auc_score(y_true, y_proba)
     avg_p = average_precision_score(y_true, y_proba)
     return {
+        "# DEFAULT": n_predicted,
         "RECALL": recall,
         "PRECISION": precision,
         "F1": f1,

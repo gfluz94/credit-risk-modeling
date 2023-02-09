@@ -1,5 +1,7 @@
 from typing import Any, Dict
 from datetime import datetime
+import numpy as np
+import pandas as pd
 import pytest
 
 
@@ -44,3 +46,14 @@ def time_since_input_dict() -> Dict[str, Any]:
         "member_id": 1296599,
         "earliest_cr_line": datetime.strptime("Jan-95", "%b-%y"),
     }
+
+
+@pytest.fixture(scope="module")
+def scores_and_true_labels() -> pd.DataFrame:
+    np.random.seed(99)
+    return pd.DataFrame(
+        {
+            "true_labels": np.random.choice([0, 1], size=100),
+            "pd": np.random.rand(100),
+        }
+    )

@@ -1,0 +1,266 @@
+addr_state:
+  OHECategoriesCreator:
+    final_categories_dict:
+      AL_OK_LA:
+      - AL
+      - OK
+      - LA
+      CA:
+      - CA
+      CT:
+      - CT
+      FL:
+      - FL
+      HI:
+      - HI
+      IL:
+      - IL
+      IN_OR_WA_GA:
+      - IN
+      - OR
+      - WA
+      - GA
+      KY_RI_ID:
+      - KY
+      - RI
+      - ID
+      MD_NJ_VA_NC_NM:
+      - NJ
+      - VA
+      - NC
+      - NM
+      - MD
+      MN_MA_SD:
+      - MN
+      - MA
+      - SD
+      MO:
+      - MO
+      MS_AK_MT_VT:
+      - MS
+      - AK
+      - MT
+      - VT
+      NH_WY_DC:
+      - NH
+      - WY
+      - DC
+      NV_ND_ME_NE_IA:
+      - NV
+      - ND
+      - ME
+      - NE
+      - IA
+      NY:
+      - NY
+      PA_AR_OH_UT:
+      - PA
+      - AR
+      - OH
+      - UT
+      TN_AZ_MI:
+      - TN
+      - AZ
+      - MI
+      TX:
+      - TX
+      WI_DE:
+      - WI
+      - DE
+      WV_KS_CO_SC:
+      - WV
+      - KS
+      - CO
+      - SC
+  ReferenceCategory: addr_state_NV_ND_ME_NE_IA
+annual_inc:
+  NumericCategoriesCreator:
+    boundaries:
+    - 1862
+    - 20000
+    - 30000
+    - 40000
+    - 50000
+    - 60000
+    - 70000
+    - 80000
+    - 90000
+    - 100000
+    - 120000
+    - 140001
+  NumericWinsorizer:
+    lower: null
+    upper: 140000
+  ReferenceCategory: annual_inc_1862-20000
+dti:
+  NumericCategoriesCreator:
+    boundaries:
+    - 0
+    - 8
+    - 12
+    - 16
+    - 18
+    - 20
+    - 22
+    - 27
+    - 40
+  ReferenceCategory: dti_28-40
+emp_length:
+  OHECategoriesCreator:
+    final_categories_dict:
+      10+y:
+      - '10'
+      1y:
+      - '1'
+      2-4y:
+      - '2'
+      - '3'
+      - '4'
+      5-6y:
+      - '5'
+      - '6'
+      - '7'
+      7-9y:
+      - '7'
+      - '8'
+      - '9'
+      <1y:
+      - '0'
+  ReferenceCategory: emp_length_<1y
+grade:
+  OHECategoriesCreator:
+    final_categories_dict:
+      A:
+      - A
+      B:
+      - B
+      C:
+      - C
+      D:
+      - D
+      E:
+      - E
+      F:
+      - F
+      G:
+      - G
+  ReferenceCategory: grade_G
+home_ownership:
+  OHECategoriesCreator:
+    final_categories_dict:
+      MORTGAGE:
+      - MORTGAGE
+      NONE_OTHER_RENT_ANY:
+      - NONE
+      - OTHER
+      - RENT
+      - ANY
+      OWN:
+      - OWN
+  ReferenceCategory: home_ownership_NONE_OTHER_RENT_ANY
+initial_list_status:
+  OHECategoriesCreator:
+    final_categories_dict:
+      f:
+      - f
+      w:
+      - w
+  ReferenceCategory: initial_list_status_f
+inq_last_6mths:
+  NumericCategoriesCreator:
+    boundaries:
+    - 0
+    - 0
+    - 1
+    - 2
+    - 4
+    - 5
+    - 8
+  NumericWinsorizer:
+    lower: null
+    upper: 7
+  ReferenceCategory: inq_last_6mths_6-8
+int_rate:
+  NumericCategoriesCreator:
+    boundaries:
+    - 5
+    - 6.0
+    - 7.5
+    - 8.9
+    - 9.5
+    - 10.2
+    - 13.7
+    - 15.7
+    - 17.1
+    - 20.5
+    - 27
+  ReferenceCategory: int_rate_21.5-27
+months_since_earliest_cr_line:
+  NumericCategoriesCreator:
+    boundaries:
+    - 72
+    - 140
+    - 220
+    - 280
+    - 360
+    - 587
+  ReferenceCategory: months_since_earliest_cr_line_72-140
+months_since_issue_d:
+  NumericCategoriesCreator:
+    boundaries:
+    - 35
+    - 39
+    - 42
+    - 45
+    - 48
+    - 51
+    - 54
+    - 63
+    - 84
+    - 127
+  ReferenceCategory: months_since_issue_d_85-127
+purpose:
+  OHECategoriesCreator:
+    final_categories_dict:
+      car:
+      - car
+      credit_card:
+      - credit_card
+      debt_consolidation:
+      - debt_consolidation
+      educational_small_business:
+      - small_business
+      - educational
+      major_purchase_home_improvement:
+      - major_purchase
+      - home_improvement
+      medical:
+      - medical
+      other:
+      - other
+      renewable_energy_house_moving:
+      - renewable_energy
+      - house
+      - moving
+      vacation_wedding:
+      - vacation
+      - wedding
+  ReferenceCategory: purpose_educational_small_business
+term:
+  OHECategoriesCreator:
+    final_categories_dict:
+      '36':
+      - '36'
+      '60':
+      - '60'
+  ReferenceCategory: term_60
+verification_status:
+  OHECategoriesCreator:
+    final_categories_dict:
+      Not Verified:
+      - Not Verified
+      Source Verified:
+      - Source Verified
+      Verified:
+      - Verified
+  ReferenceCategory: verification_status_Verified

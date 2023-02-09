@@ -101,3 +101,67 @@ def plot_distributions(
 
     if save_eval_artifacts:
         fig.savefig(os.path.join(eval_artifacts_path, f"distribution_{label}.png"))
+
+
+def plot_ks_curve(
+    y_true: np.ndarray,
+    y_proba: np.ndarray,
+    label: str,
+    target_name: str = "default",
+    save_eval_artifacts: bool = False,
+    eval_artifacts_path: str = ".",
+) -> None:
+    """Function to plot score distributions for positive and negative classes
+    Args:
+        y_true (pd.Series): Array containing true label values
+        y_proba (np.ndarray): Array containing probabilities predicted by the model
+        label (str): Label to be displayed on titles (train, test)
+        target_name (str, optional): Name of the class of interest. Defaults to "default".
+        show_viz (bool, optional): Whether or not visualizations should be displayed on screen. Defaults to False.
+        save_eval_artifacts (bool, optional): Whether or not to save visualizations. Defaults to False.
+        eval_artifacts_path (bool, optional): Path to where curves should be dumped to. Defaults to current folder.
+    """
+    label_col = target_name.capitalize()
+    probability_col = f"Probability of {target_name}"
+    default_pct_col = f"% {target_name}"
+    non_default_pct_col = f"% Non-{target_name}"
+
+    probabilities_and_labels_train = pd.DataFrame(
+        {
+            label_col: y_true,
+            probability_col: y_proba,
+        }
+    ).sort_values(probability_col)
+
+    probabilities_and_labels_train[default_pct_col] = (
+        probabilities_and_labels_train[label_col].cumsum()
+        / probabilities_and_labels_train[label_col].sum()
+    )
+    probabilities_and_labels_train[non_default_pct_col] = (
+        1 - probabilities_and_labels_train[label_col]
+    ).cumsum() / (1 - probabilities_and_labels_train[label_col]).sum()
+    ks = np.max(
+        probabilities_and_labels_train[non_default_pct_col]
+        - probabilities_and_labels_train[default_pct_col]
+    )
+
+    fig, ax = plt.subplots(1, 1, figsize=(15, 4))
+    plt.plot(
+        probabilities_and_labels_train[probability_col],
+        probabilities_and_labels_train[default_pct_col],
+        label=default_pct_col,
+        color="red",
+    )
+    plt.plot(
+        probabilities_and_labels_train[probability_col],
+        probabilities_and_labels_train[non_default_pct_col],
+        label=non_default_pct_col,
+        color="navy",
+    )
+    plt.title(f"{label} - Kolmogorov-Smirnov | KS-Coefficient = {ks:.3f}")
+    plt.legend()
+    plt.grid(alpha=0.30, linestyle="--")
+    plt.show()
+
+    if save_eval_artifacts:
+        fig.savefig(os.path.join(eval_artifacts_path, f"ks_{label}.png"))

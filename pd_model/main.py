@@ -1,11 +1,13 @@
 from datetime import datetime
-import yaml
+from enum import Enum, auto
 from argparse import ArgumentParser
+import yaml
 import pandas as pd
 import logging
 import dill
 
 from sklearn.model_selection import train_test_split
+from sklearn.pipeline import Pipeline
 from sklearn.linear_model import LogisticRegression
 from statsmodels.api import Logit
 
@@ -18,6 +20,7 @@ from credit_risk_modeling.feature_engineering import (
     TimeSinceCalculator,
     OHECategoriesCreator,
     NumericCategoriesCreator,
+    ReferenceCategoriesDropper,
 )
 from credit_risk_modeling.eda import compute_woe, plot_woe_by_category, get_fine_classes
 from credit_risk_modeling.evaluation import (
@@ -36,6 +39,12 @@ logger = logging.getLogger()
 import warnings
 
 warnings.filterwarnings("ignore")
+
+
+class TransformerType(Enum):
+    OHECategoriesCreator = auto()
+    NumericCategoriesCreator = auto()
+    NumericWinsorizer = auto()
 
 
 if __name__ == "__main__":
@@ -192,7 +201,57 @@ if __name__ == "__main__":
     with open(args.preprocessing_config_file, "r") as stream:
         preprocessing_configuration = yaml.safe_load(stream)
 
-    ### MODEL TRAINING
+    if args.verbose:
+        logger.info("Creating preprocessing pipeline...")
+    transformers = []
+    reference_categories = []
+    for field, field_metadata in preprocessing_configuration.items():
+        if TransformerType.NumericWinsorizer.name in field_metadata.keys():
+            transformers.append(
+                NumericWinsorizer(
+                    field_name=field,
+                    lower=field_metadata[TransformerType.NumericWinsorizer.name][
+                        "lower"
+                    ],
+                    upper=field_metadata[TransformerType.NumericWinsorizer.name][
+                        "upper"
+                    ],
+                )
+            )
+        if TransformerType.NumericCategoriesCreator.name in field_metadata.keys():
+            transformers.append(
+                NumericCategoriesCreator(
+                    field_name=field,
+                    boundaries=field_metadata[
+                        TransformerType.NumericCategoriesCreator.name
+                    ]["boundaries"],
+                )
+            )
+        if TransformerType.OHECategoriesCreator.name in field_metadata.keys():
+            transformers.append(
+                OHECategoriesCreator(
+                    field_name=field,
+                    final_categories_dict=field_metadata[
+                        TransformerType.OHECategoriesCreator.name
+                    ]["final_categories_dict"],
+                )
+            )
+        reference_categories.append(field_metadata["ReferenceCategory"])
+    preprocessing_pipeline = Pipeline(
+        steps=[
+            *transformers,
+            ReferenceCategoriesDropper(reference_categories=reference_categories),
+        ]
+    )
+
+    if args.verbose:
+        logger.info("Splitting data into train/test...")
+    df_train, df_test = train_test_split(
+        df,
+        test_size=args.test_size,
+        random_state=args.seed,
+        stratify=df[args.target_variable],
+    )
 
     ### EVALUATION
 

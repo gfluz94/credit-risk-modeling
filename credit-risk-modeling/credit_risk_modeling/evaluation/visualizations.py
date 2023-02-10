@@ -146,19 +146,17 @@ def plot_ks_curve(
     )
 
     fig, ax = plt.subplots(1, 1, figsize=(10, 4))
-    plt.plot(
+    ax.plot(
         probabilities_and_labels_train[probability_col],
         probabilities_and_labels_train[default_pct_col],
         label=default_pct_col,
         color="red",
-        ax=ax,
     )
-    plt.plot(
+    ax.plot(
         probabilities_and_labels_train[probability_col],
         probabilities_and_labels_train[non_default_pct_col],
         label=non_default_pct_col,
         color="navy",
-        ax=ax,
     )
     plt.title(f"{label} - Kolmogorov-Smirnov | KS-Coefficient = {ks:.3f}")
     plt.legend()

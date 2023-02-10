@@ -120,12 +120,6 @@ if __name__ == "__main__":
         default="Dec-17",
     )
     parser.add_argument(
-        "--save-evaluation-artifacts",
-        action="store_true",
-        help="Whether or not to save evaluation output.",
-        default=False,
-    )
-    parser.add_argument(
         "--evaluation-artifacts-path",
         metavar="N",
         type=str,
@@ -273,4 +267,114 @@ if __name__ == "__main__":
     model = LogisticRegression(class_weight="balanced", random_state=args.seed)
     model.fit(X_train, y_train)
 
-    ### SAVE MODEL
+    if args.verbose:
+        logger.info("Starting model evaluation...")
+        logger.info("Exporting coefficients...")
+    coefficients = pd.DataFrame(
+        {
+            "Feature": ["Intercept"] + X_train.columns.tolist(),
+            "Coefficient": [model.intercept_[0]] + model.coef_[0].tolist(),
+        }
+    )
+    coefficients = pd.concat(
+        [
+            coefficients,
+            pd.DataFrame(
+                {
+                    "Feature": reference_categories,
+                    "Coefficient": [0.0] * len(reference_categories),
+                }
+            ),
+        ],
+        axis=0,
+        ignore_index=True,
+    )
+    coefficients.sort_values("Feature").to_csv(
+        os.path.join(args.evaluation_artifacts_path, "model_coefficients.csv"),
+        index=False,
+    )
+
+    if args.verbose:
+        logger.info("Computing probabilities and scores...")
+    pd_train = model.predict_proba(X_train)[:, 1]
+    pd_test = model.predict_proba(X_test)[:, 1]
+    train_scores = convert_probabilities_to_scores(pd_train)
+    test_scores = convert_probabilities_to_scores(pd_test)
+
+    if args.verbose:
+        logger.info("Computing classification metrics...")
+    train_metrics = get_metrics_across_thresholds(y_proba=pd_train, y_true=y_train)
+    test_metrics = get_metrics_across_thresholds(y_proba=pd_test, y_true=y_test)
+    if args.verbose:
+        print("TRAIN")
+        print(train_metrics)
+        print("\nTEST")
+        print(test_metrics)
+        logger.info("Exporting results...")
+    train_metrics.to_csv(
+        os.path.join(args.evaluation_artifacts_path, "train_metrics.csv"), index=False
+    )
+    test_metrics.to_csv(
+        os.path.join(args.evaluation_artifacts_path, "test_metrics.csv"), index=False
+    )
+
+    if args.verbose:
+        logger.info("Plotting curves and distributions...")
+    plot_roc_pr_curves(
+        y_proba=pd_train,
+        y_true=y_train,
+        label="TRAIN",
+        save_eval_artifacts=True,
+        eval_artifacts_path=args.evaluation_artifacts_path,
+    )
+    plot_roc_pr_curves(
+        y_proba=pd_test,
+        y_true=y_test,
+        label="TEST",
+        save_eval_artifacts=True,
+        eval_artifacts_path=args.evaluation_artifacts_path,
+    )
+    plot_ks_curve(
+        y_proba=pd_train,
+        y_true=y_train,
+        label="TRAIN",
+        target_name=args.target_variable,
+        save_eval_artifacts=True,
+        eval_artifacts_path=args.evaluation_artifacts_path,
+    )
+    plot_ks_curve(
+        y_proba=pd_test,
+        y_true=y_test,
+        label="TEST",
+        target_name=args.target_variable,
+        save_eval_artifacts=True,
+        eval_artifacts_path=args.evaluation_artifacts_path,
+    )
+    plot_distributions(
+        scores=train_scores,
+        y_true=df_train.loc[:, "default"],
+        label="TRAIN",
+        save_eval_artifacts=True,
+        eval_artifacts_path=args.evaluation_artifacts_path,
+    )
+    plot_distributions(
+        scores=test_scores,
+        y_true=df_test.loc[:, "default"],
+        label="TEST",
+        save_eval_artifacts=True,
+        eval_artifacts_path=args.evaluation_artifacts_path,
+    )
+
+    if args.verbose:
+        logger.info("Exporting model artifacts...")
+    with open(
+        os.path.join(args.evaluation_artifacts_path, "pd_preprocessing.pkl"), "wb"
+    ) as file:
+        dill.dump(preprocessing_pipeline, file)
+    with open(
+        os.path.join(args.evaluation_artifacts_path, "pd_model.pkl"), "wb"
+    ) as file:
+        dill.dump(model, file)
+
+    if args.verbose:
+        logger.info("FINISHED!")

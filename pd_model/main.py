@@ -1,3 +1,4 @@
+import os
 from datetime import datetime
 from enum import Enum, auto
 from argparse import ArgumentParser
@@ -9,7 +10,6 @@ import dill
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.linear_model import LogisticRegression
-from statsmodels.api import Logit
 
 from credit_risk_modeling.cleaning import (
     DatetimeConverter,
@@ -159,6 +159,8 @@ if __name__ == "__main__":
     df = pd.read_csv(args.data_filepath)
     if args.verbose:
         logger.info("Dataframe loaded!")
+        logger.info("Imputing potential missing information...")
+    df["earliest_cr_line"] = df["earliest_cr_line"].fillna(df["issue_d"])
 
     if args.verbose:
         logger.info("Cleaning data and preprocessing dataframe...")
@@ -174,7 +176,7 @@ if __name__ == "__main__":
             reference_date=datetime.strptime(args.reference_date, args.datetime_format),
             time_unit=args.time_unit,
         )
-    df = time_since_calculator.transform(df)
+        df = time_since_calculator.transform(df)
 
     if args.verbose:
         logger.info("Extracting numeric data from text...")
@@ -204,6 +206,7 @@ if __name__ == "__main__":
     if args.verbose:
         logger.info("Creating preprocessing pipeline...")
     transformers = []
+    base_fields = []
     reference_categories = []
     for field, field_metadata in preprocessing_configuration.items():
         if TransformerType.NumericWinsorizer.name in field_metadata.keys():
@@ -237,10 +240,17 @@ if __name__ == "__main__":
                 )
             )
         reference_categories.append(field_metadata["ReferenceCategory"])
+        base_fields.append(field)
     preprocessing_pipeline = Pipeline(
         steps=[
-            *transformers,
-            ReferenceCategoriesDropper(reference_categories=reference_categories),
+            *[
+                (f"transformer_{i+1}", transformer)
+                for i, transformer in enumerate(transformers)
+            ],
+            (
+                "drop_reference_cats",
+                ReferenceCategoriesDropper(reference_categories=reference_categories),
+            ),
         ]
     )
 
@@ -252,7 +262,15 @@ if __name__ == "__main__":
         random_state=args.seed,
         stratify=df[args.target_variable],
     )
+    X_train, y_train = df_train[base_fields], df_train[args.target_variable]
+    X_test, y_test = df_test[base_fields], df_test[args.target_variable]
 
-    ### EVALUATION
+    if args.verbose:
+        logger.info("Fitting model...")
+    X_train = preprocessing_pipeline.fit_transform(X_train)
+    X_test = preprocessing_pipeline.transform(X_test)
+
+    model = LogisticRegression(class_weight="balanced", random_state=args.seed)
+    model.fit(X_train, y_train)
 
     ### SAVE MODEL

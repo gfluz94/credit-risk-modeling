@@ -63,3 +63,25 @@ def scores_and_true_labels() -> pd.DataFrame:
 def probabilities_of_default() -> np.ndarray:
     np.random.seed(99)
     return np.round(np.linspace(0, 1, 21), 2)
+
+
+@pytest.fixture(scope="module")
+def model_input_no_zeros() -> pd.DataFrame:
+    """Example dataframe for testing purposes
+    Returns:
+        pandas.DataFrame: Mocked dataframe for raising exception when training regressor
+    """
+    return pd.DataFrame(
+        {"X1": [10.0, 15.0, 20.0], "X2": [0.0, 1.0, 0.0], "y": [200.0, 300.0, 400.0]}
+    )
+
+
+@pytest.fixture(scope="module")
+def model_input() -> pd.DataFrame:
+    """Example dataframe for testing purposes
+    Returns:
+        pandas.DataFrame: Mocked dataframe for fitting a Zero-Inflated Regressor
+    """
+    return pd.DataFrame(
+        {"X1": [10.0, 15.0, 20.0], "X2": [0.0, 1.0, 0.0], "y": [200.0, 0, 400.0]}
+    )

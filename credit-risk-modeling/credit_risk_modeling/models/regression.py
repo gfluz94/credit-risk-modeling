@@ -62,7 +62,7 @@ class ZeroInflatedXGBoost(BaseEstimator, RegressorMixin):
 
         if y_classification.mean() == 1:
             raise ZerosNotPresentForZeroInflatedRegression(
-                f"There are no zero values in target variable. In this scenario, carry out regular regression."
+                "There are no zero values in target variable. In this scenario, carry out regular regression."
             )
 
         # TRAINING CLASSIFIER FIRST

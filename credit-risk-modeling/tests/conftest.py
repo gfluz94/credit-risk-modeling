@@ -83,5 +83,9 @@ def model_input() -> pd.DataFrame:
         pandas.DataFrame: Mocked dataframe for fitting a Zero-Inflated Regressor
     """
     return pd.DataFrame(
-        {"X1": [10.0, 15.0, 20.0], "X2": [0.0, 1.0, 0.0], "y": [200.0, 0, 400.0]}
+        {
+            "X1": 5 * [10.0, 15.0, 20.0],
+            "X2": 5 * [0.0, 1.0, 0.0],
+            "y": 5 * [200.0, 0, 400.0],
+        }
     )

@@ -48,7 +48,25 @@ class TestZeroInflatedXGBoost(object):
         output = model.predict(X)
 
         # EXPECTED
-        expected = np.zeros(3)
+        expected = np.array(
+            [
+                200.00032043,
+                0.0,
+                399.99963379,
+                200.00032043,
+                0.0,
+                399.99963379,
+                200.00032043,
+                0.0,
+                399.99963379,
+                200.00032043,
+                0.0,
+                399.99963379,
+                200.00032043,
+                0.0,
+                399.99963379,
+            ]
+        )
 
         # ASSERT
         np.testing.assert_array_almost_equal(expected, output)

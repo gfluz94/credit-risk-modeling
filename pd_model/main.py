@@ -24,7 +24,7 @@ from credit_risk_modeling.feature_engineering import (
 )
 from credit_risk_modeling.eda import compute_woe, plot_woe_by_category, get_fine_classes
 from credit_risk_modeling.evaluation import (
-    get_metrics_across_thresholds,
+    get_classification_metrics_across_thresholds,
     plot_distributions,
     plot_roc_pr_curves,
     plot_ks_curve,
@@ -303,8 +303,12 @@ if __name__ == "__main__":
 
     if args.verbose:
         logger.info("Computing classification metrics...")
-    train_metrics = get_metrics_across_thresholds(y_proba=pd_train, y_true=y_train)
-    test_metrics = get_metrics_across_thresholds(y_proba=pd_test, y_true=y_test)
+    train_metrics = get_classification_metrics_across_thresholds(
+        y_proba=pd_train, y_true=y_train
+    )
+    test_metrics = get_classification_metrics_across_thresholds(
+        y_proba=pd_test, y_true=y_test
+    )
     if args.verbose:
         print("TRAIN")
         print(train_metrics)

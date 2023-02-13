@@ -1,11 +1,13 @@
 import pandas as pd
 
-from credit_risk_modeling.evaluation import get_metrics_across_thresholds
+from credit_risk_modeling.evaluation import get_classification_metrics_across_thresholds
 
 
-def test_get_metrics_across_thresholds(scores_and_true_labels: pd.DataFrame):
+def test_get_classification_metrics_across_thresholds(
+    scores_and_true_labels: pd.DataFrame,
+):
     # OUTPUT
-    output = get_metrics_across_thresholds(
+    output = get_classification_metrics_across_thresholds(
         y_proba=scores_and_true_labels.pd.values,
         y_true=scores_and_true_labels.true_labels,
     )

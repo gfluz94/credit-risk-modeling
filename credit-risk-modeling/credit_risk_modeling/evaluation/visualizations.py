@@ -1,8 +1,9 @@
-__all__ = ["plot_roc_pr_curves", "plot_distributions", "plot_ks_curve"]
+__all__ = ["plot_roc_pr_curves", "plot_distributions", "plot_ks_curve", "plot_regression_curves"]
 
 import os
 import pandas as pd
 import numpy as np
+import scipy
 import matplotlib.pyplot as plt
 import seaborn as sns
 
@@ -165,3 +166,91 @@ def plot_ks_curve(
 
     if save_eval_artifacts:
         fig.savefig(os.path.join(eval_artifacts_path, f"ks_{label}.png"))
+
+
+def plot_regression_curves(
+    y_true: np.ndarray,
+    y_pred: np.ndarray,
+    name: str,
+    save_eval_artifacts: bool = False,
+    eval_artifacts_path: str = ".",
+) -> None:
+    """Method that performs graphical evaluation of a regression model.
+    It generates the following visualizations:
+        * Distribution of predicted vs. true values
+        * Residuals Distribution
+        * QQ-Plot
+        * Scatterplot of predicted vs. true values
+    Args:
+        y_true (np.ndarray): True target values
+        y_pred (np.ndarray): Predicted target values
+        name (str): Name to show in the title.
+        convert_exp (bool, optional): Whether or not output needs to be converted from log transformation. Defaults to False.
+        save_eval_artifacts (bool, optional): Whether or not to save visualizations. Defaults to False.
+        eval_artifacts_path (bool, optional): Path to where curves should be dumped to. Defaults to current folder.
+    """
+    fig, (ax1, ax2, ax3, ax4) = plt.subplots(1, 4, figsize=(14, 5))
+    residuals = y_true - y_pred
+
+    # Predicted vs True Values Distribution
+    ax1.set_title("Histogram", fontsize=13)
+    ax1.hist(y_true, color="lightblue", edgecolor="navy", alpha=1, label="True")
+    ax1.hist(y_pred, color="red", edgecolor="red", alpha=0.6, label="Predicted")
+    ax1.legend()
+
+    # Residuals distribution
+    ax2.set_title("Residuals Distribution", fontsize=13)
+    sns.distplot(
+        residuals,
+        bins=30,
+        color="blue",
+        ax=ax2,
+    )
+    ax2.set_xlabel("Residuals")
+
+    # QQ-Plot
+    standardized_residuals = (np.sort(residuals) - np.mean(residuals)) / np.std(
+        residuals, ddof=1
+    )
+    theoretical_quantiles = [
+        scipy.stats.norm.ppf(p)
+        for p in np.linspace(0.01, 0.99, len(standardized_residuals))
+    ]
+    ax3.set_title("QQ-Plot", fontsize=13)
+    sns.regplot(
+        x=theoretical_quantiles,
+        y=standardized_residuals,
+        fit_reg=False,
+        scatter_kws={"color": "lightblue", "linewidth": 1, "edgecolors": "navy"},
+        line_kws={"color": "red"},
+        ax=ax3,
+    )
+    ax3.plot(
+        [min(theoretical_quantiles), max(theoretical_quantiles)],
+        [min(theoretical_quantiles), max(theoretical_quantiles)],
+        color="red",
+        linestyle="--",
+    )
+    ax3.set_xlim((min(theoretical_quantiles), max(theoretical_quantiles)))
+    ax3.set_ylim((min(theoretical_quantiles), max(theoretical_quantiles)))
+    ax3.set_ylabel("Standardized Residuals")
+    ax3.set_xlabel("Theoretical Quantiles")
+
+    # Scatterplot of predicted vs. true values
+    ax4.set_title("Predicted x True", fontsize=13)
+    min_val = min([y_pred.min(), y_true.min()])
+    max_val = max([y_pred.max(), y_true.max()])
+    sns.scatterplot(x=y_pred, y=y_true, color="lightblue", edgecolor="navy", ax=ax4)
+    ax4.plot([min_val, max_val], [min_val, max_val], color="red", ls="dashed")
+    ax4.set_xlim([min_val, max_val])
+    ax4.set_ylim([min_val, max_val])
+    ax4.set_xlabel("Predicted Values")
+    ax4.set_ylabel("True Values")
+
+    plt.tight_layout()
+    plt.show()
+
+    if save_eval_artifacts:
+        fig.savefig(
+            os.path.join(eval_artifacts_path, f"{name}_regression_evaluation.png")
+        )

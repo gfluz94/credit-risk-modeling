@@ -1,6 +1,10 @@
 import pandas as pd
 
-from credit_risk_modeling.evaluation import get_classification_metrics_across_thresholds
+from credit_risk_modeling.evaluation import (
+    get_classification_metrics_across_thresholds,
+    get_regression_metrics,
+)
+from credit_risk_modeling.evaluation.metrics import RegressionMetric
 
 
 def test_get_classification_metrics_across_thresholds(
@@ -175,3 +179,24 @@ def test_get_classification_metrics_across_thresholds(
         metrics_df.T,
         output,
     )
+
+
+def test_get_regression_metrics(
+    predictions_true_values_regression: pd.DataFrame,
+):
+    # OUTPUT
+    output = get_regression_metrics(
+        y_pred=predictions_true_values_regression.predictions.values,
+        y_true=predictions_true_values_regression.true_values,
+    )
+
+    # EXPECTED
+    expected = {
+        "# OBS": len(predictions_true_values_regression),
+        RegressionMetric.RMSE.name: 0.6066300355241242,
+        RegressionMetric.R2.name: 0.816,
+        RegressionMetric.MAE.name: 0.5600000000000002,
+    }
+
+    # ASSERT
+    assert expected == output

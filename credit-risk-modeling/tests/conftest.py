@@ -89,3 +89,13 @@ def model_input() -> pd.DataFrame:
             "y": 5 * [200.0, 0, 400.0],
         }
     )
+
+
+@pytest.fixture(scope="module")
+def predictions_true_values_regression() -> pd.DataFrame:
+    return pd.DataFrame(
+        {
+            "true_values": [1.0, 2.0, 3.0, 4.0, 5.0],
+            "predictions": [0.8, 1.5, 2.5, 3.3, 4.1],
+        }
+    )

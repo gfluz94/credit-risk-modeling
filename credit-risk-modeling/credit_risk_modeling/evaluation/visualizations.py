@@ -194,24 +194,40 @@ def plot_regression_curves(
         save_eval_artifacts (bool, optional): Whether or not to save visualizations. Defaults to False.
         eval_artifacts_path (bool, optional): Path to where curves should be dumped to. Defaults to current folder.
     """
-    fig, (ax1, ax2, ax3, ax4) = plt.subplots(1, 4, figsize=(14, 5))
+    fig, (ax1, ax2, ax3, ax4) = plt.subplots(1, 4, figsize=(14, 4))
     residuals = y_true - y_pred
 
     # Predicted vs True Values Distribution
     ax1.set_title("Histogram", fontsize=13)
-    ax1.hist(y_true, color="lightblue", edgecolor="navy", alpha=1, label="True")
-    ax1.hist(y_pred, color="red", edgecolor="red", alpha=0.6, label="Predicted")
+    sns.distplot(
+        y_true,
+        color="lightblue",
+        kde=False,
+        hist_kws={"edgecolor": "navy"},
+        label="True",
+        ax=ax1,
+    )
+    sns.distplot(
+        y_pred,
+        color="red",
+        kde=False,
+        hist_kws={"edgecolor": "red"},
+        label="Predicted",
+        ax=ax1,
+    )
     ax1.legend()
+    ax1.grid(alpha=0.3, linestyle="--")
 
     # Residuals distribution
     ax2.set_title("Residuals Distribution", fontsize=13)
     sns.distplot(
         residuals,
-        bins=30,
-        color="blue",
+        color="lightblue",
+        kde_kws={"color": "navy"},
         ax=ax2,
     )
     ax2.set_xlabel("Residuals")
+    ax2.grid(alpha=0.3, linestyle="--")
 
     # QQ-Plot
     standardized_residuals = (np.sort(residuals) - np.mean(residuals)) / np.std(
@@ -240,17 +256,20 @@ def plot_regression_curves(
     ax3.set_ylim((min(theoretical_quantiles), max(theoretical_quantiles)))
     ax3.set_ylabel("Standardized Residuals")
     ax3.set_xlabel("Theoretical Quantiles")
+    ax3.grid(alpha=0.3, linestyle="--")
 
     # Scatterplot of predicted vs. true values
     ax4.set_title("Predicted x True", fontsize=13)
     min_val = min([y_pred.min(), y_true.min()])
     max_val = max([y_pred.max(), y_true.max()])
     sns.scatterplot(x=y_pred, y=y_true, color="lightblue", edgecolor="navy", ax=ax4)
+    sns.histplot(x=y_pred, y=y_true, bins=30, pthresh=0.1, cmap="coolwarm", ax=ax4)
     ax4.plot([min_val, max_val], [min_val, max_val], color="red", ls="dashed")
     ax4.set_xlim([min_val, max_val])
     ax4.set_ylim([min_val, max_val])
     ax4.set_xlabel("Predicted Values")
     ax4.set_ylabel("True Values")
+    ax4.grid(alpha=0.3, linestyle="--")
 
     plt.tight_layout()
     plt.show()

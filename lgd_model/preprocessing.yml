@@ -1,0 +1,151 @@
+addr_state:
+  OHECategoriesCreator:
+    final_categories_dict:
+      AL_OK_LA:
+      - AL
+      - OK
+      - LA
+      CA:
+      - CA
+      CT:
+      - CT
+      FL:
+      - FL
+      HI:
+      - HI
+      IL:
+      - IL
+      IN_OR_WA_GA:
+      - IN
+      - OR
+      - WA
+      - GA
+      KY_RI_ID:
+      - KY
+      - RI
+      - ID
+      MD_NJ_VA_NC_NM:
+      - NJ
+      - VA
+      - NC
+      - NM
+      - MD
+      MN_MA_SD:
+      - MN
+      - MA
+      - SD
+      MO:
+      - MO
+      MS_AK_MT_VT:
+      - MS
+      - AK
+      - MT
+      - VT
+      NH_WY_DC:
+      - NH
+      - WY
+      - DC
+      NV_ND_ME_NE_IA:
+      - NV
+      - ND
+      - ME
+      - NE
+      - IA
+      NY:
+      - NY
+      PA_AR_OH_UT:
+      - PA
+      - AR
+      - OH
+      - UT
+      TN_AZ_MI:
+      - TN
+      - AZ
+      - MI
+      TX:
+      - TX
+      WI_DE:
+      - WI
+      - DE
+      WV_KS_CO_SC:
+      - WV
+      - KS
+      - CO
+      - SC
+  ReferenceCategory: addr_state_NV_ND_ME_NE_IA
+grade:
+  OHECategoriesCreator:
+    final_categories_dict:
+      A:
+      - A
+      B:
+      - B
+      C:
+      - C
+      D:
+      - D
+      E:
+      - E
+      F:
+      - F
+      G:
+      - G
+  ReferenceCategory: grade_G
+home_ownership:
+  OHECategoriesCreator:
+    final_categories_dict:
+      MORTGAGE:
+      - MORTGAGE
+      NONE_OTHER_RENT_ANY:
+      - NONE
+      - OTHER
+      - RENT
+      - ANY
+      OWN:
+      - OWN
+  ReferenceCategory: home_ownership_NONE_OTHER_RENT_ANY
+initial_list_status:
+  OHECategoriesCreator:
+    final_categories_dict:
+      f:
+      - f
+      w:
+      - w
+  ReferenceCategory: initial_list_status_f
+purpose:
+  OHECategoriesCreator:
+    final_categories_dict:
+      car:
+      - car
+      credit_card:
+      - credit_card
+      debt_consolidation:
+      - debt_consolidation
+      educational_small_business:
+      - small_business
+      - educational
+      major_purchase_home_improvement:
+      - major_purchase
+      - home_improvement
+      medical:
+      - medical
+      other:
+      - other
+      renewable_energy_house_moving:
+      - renewable_energy
+      - house
+      - moving
+      vacation_wedding:
+      - vacation
+      - wedding
+  ReferenceCategory: purpose_educational_small_business
+verification_status:
+  OHECategoriesCreator:
+    final_categories_dict:
+      Not Verified:
+      - Not Verified
+      Source Verified:
+      - Source Verified
+      Verified:
+      - Verified
+  ReferenceCategory: verification_status_Verified

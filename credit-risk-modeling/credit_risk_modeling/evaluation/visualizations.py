@@ -1,4 +1,9 @@
-__all__ = ["plot_roc_pr_curves", "plot_distributions", "plot_ks_curve", "plot_regression_curves"]
+__all__ = [
+    "plot_roc_pr_curves",
+    "plot_distributions",
+    "plot_ks_curve",
+    "plot_regression_curves",
+]
 
 import os
 import pandas as pd

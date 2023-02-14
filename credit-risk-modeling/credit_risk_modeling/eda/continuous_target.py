@@ -71,7 +71,7 @@ def regression_plot(
 
     for i, feature in tqdm(enumerate(features)):
         ax = plt.subplot(n_features, 1, i + 1)
-        corr = np.corrcoef(x=data_[feature], y=data_[target_variable])
+        corr = np.corrcoef(x=data_[feature], y=data_[target_variable])[0, 1]
         sns.regplot(
             data=data_,
             x=feature,

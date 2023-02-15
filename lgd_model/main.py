@@ -13,11 +13,6 @@ from sklearn.pipeline import Pipeline
 from xgboost import XGBClassifier, XGBRegressor
 
 from credit_risk_modeling.cleaning import DatetimeConverter, NumericExtractor
-from credit_risk_modeling.eda import (
-    boxplot_by_categories,
-    correlation_heatmap,
-    regression_plot,
-)
 from credit_risk_modeling.feature_engineering import (
     TimeSinceCalculator,
     OHECategoriesCreator,
@@ -130,6 +125,57 @@ if __name__ == "__main__":
         default="Dec-17",
     )
     parser.add_argument(
+        "--numeric-cols",
+        metavar="N",
+        type=str,
+        nargs="+",
+        help="Numeric columns that will be used for model development.",
+        default=[
+            "term",
+            "emp_length",
+            "months_since_issue_d",
+            "int_rate",
+            "funded_amnt",
+            "months_since_earliest_cr_line",
+            "annual_inc",
+            "delinq_2yrs",
+            "inq_last_6mths",
+            "open_acc",
+            "pub_rec",
+            "total_acc",
+            "dti",
+            "total_rev_hi_lim",
+        ],
+    )
+    parser.add_argument(
+        "--classifier-estimators",
+        metavar="N",
+        type=int,
+        help="XGBClassifier number of estimators.",
+        default=200,
+    )
+    parser.add_argument(
+        "--classifier-max-depth",
+        metavar="N",
+        type=int,
+        help="XGBClassifier maximum depth.",
+        default=5,
+    )
+    parser.add_argument(
+        "--regressor-estimators",
+        metavar="N",
+        type=int,
+        help="XGBRegressor number of estimators.",
+        default=200,
+    )
+    parser.add_argument(
+        "--regressor-max-depth",
+        metavar="N",
+        type=int,
+        help="XGBRegressor maximum depth.",
+        default=4,
+    )
+    parser.add_argument(
         "--evaluation-artifacts-path",
         metavar="N",
         type=str,
@@ -236,6 +282,8 @@ if __name__ == "__main__":
             ),
         ]
     )
+    base_fields += args.numeric_cols
+    df[args.numeric_cols] = df[args.numeric_cols].astype(float)
 
     if args.verbose:
         logger.info("Splitting data into train/test...")
@@ -243,7 +291,6 @@ if __name__ == "__main__":
         df,
         test_size=args.test_size,
         random_state=args.seed,
-        stratify=df[args.target_variable],
     )
     X_train, y_train = df_train[base_fields], df_train[args.target_variable]
     X_test, y_test = df_test[base_fields], df_test[args.target_variable]
@@ -253,31 +300,88 @@ if __name__ == "__main__":
     X_train = preprocessing_pipeline.fit_transform(X_train)
     X_test = preprocessing_pipeline.transform(X_test)
 
-    # model = ZeroInflatedXGBoost()
-    # model.fit(X_train, y_train)
+    scale_non_zeros = (y_train == 0.0).sum() / (y_train != 0.0).sum()
+    classifier = XGBClassifier(
+        objective="binary:logistic",
+        n_estimators=args.classifier_estimators,
+        max_depth=args.classifier_max_depth,
+        scale_pos_weight=scale_non_zeros,
+        seed=args.seed,
+    )
+    regressor = XGBRegressor(
+        objective="reg:squarederror",
+        n_estimators=args.regressor_estimators,
+        max_depth=args.regressor_max_depth,
+        seed=args.seed,
+    )
+
+    model = ZeroInflatedXGBoost(
+        xgboost_classifier=classifier,
+        xgboost_regressor=regressor,
+    )
+    model.fit(X_train, y_train)
 
     if args.verbose:
         logger.info("Starting model evaluation...")
         logger.info("Computing regression metrics...")
 
-    # TODO
+    y_pred_train = np.clip(model.predict(X_train), 0.0, 1.0)
+    y_pred_test = np.clip(model.predict(X_test), 0.0, 1.0)
+
+    train_metrics = get_regression_metrics(y_pred=y_pred_train, y_true=y_train)
+    test_metrics = get_regression_metrics(y_pred=y_pred_test, y_true=y_test)
+
+    if args.verbose:
+        logger.info("TRAIN METRICS")
+        for metric, value in train_metrics.items():
+            logger.info("%s = %s", metric, value)
+        logger.info("TEST METRICS")
+        for metric, value in test_metrics.items():
+            logger.info("%s = %s", metric, value)
+
+    metrics_df = pd.DataFrame([train_metrics], index=["TRAIN"])
+    metrics_df = pd.concat(
+        [
+            metrics_df,
+            pd.DataFrame(
+                [test_metrics],
+                index=["TEST"],
+            ),
+        ],
+        axis=0,
+    )
+    metrics_df.to_csv(
+        os.path.join(args.evaluation_artifacts_path, "regression_metrics.csv")
+    )
 
     if args.verbose:
         logger.info("Plotting curves...")
-
-    # TODO
+    plot_regression_curves(
+        y_pred=y_pred_train,
+        y_true=y_train,
+        name="TRAIN",
+        save_eval_artifacts=True,
+        eval_artifacts_path=args.evaluation_artifacts_path,
+    )
+    plot_regression_curves(
+        y_pred=y_pred_test,
+        y_true=y_test,
+        name="TEST",
+        save_eval_artifacts=True,
+        eval_artifacts_path=args.evaluation_artifacts_path,
+    )
 
     if args.verbose:
         logger.info("Exporting model artifacts...")
 
-    # with open(
-    #     os.path.join(args.evaluation_artifacts_path, "pd_preprocessing.pkl"), "wb"
-    # ) as file:
-    #     dill.dump(preprocessing_pipeline, file)
-    # with open(
-    #     os.path.join(args.evaluation_artifacts_path, "pd_model.pkl"), "wb"
-    # ) as file:
-    #     dill.dump(model, file)
+    with open(
+        os.path.join(args.evaluation_artifacts_path, "lgd_preprocessing.pkl"), "wb"
+    ) as file:
+        dill.dump(preprocessing_pipeline, file)
+    with open(
+        os.path.join(args.evaluation_artifacts_path, "lgd_model.pkl"), "wb"
+    ) as file:
+        dill.dump(model, file)
 
     if args.verbose:
         logger.info("FINISHED!")

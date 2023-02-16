@@ -159,10 +159,12 @@ if __name__ == "__main__":
     if args.verbose:
         logger.info("Cleaning data and preprocessing dataframe...")
         logger.info("Transforming datetime into time delta...")
+    cleaning_steps = []
     datetime_converter = DatetimeConverter(
         field_names=args.datetime_cols, datetime_format=args.datetime_format
     )
     df = datetime_converter.transform(df)
+    cleaning_steps.append(datetime_converter)
 
     for datetime_col in args.datetime_cols:
         time_since_calculator = TimeSinceCalculator(
@@ -171,6 +173,7 @@ if __name__ == "__main__":
             time_unit=args.time_unit,
         )
         df = time_since_calculator.transform(df)
+        cleaning_steps.append(time_since_calculator)
 
     if args.verbose:
         logger.info("Extracting numeric data from text...")
@@ -180,11 +183,20 @@ if __name__ == "__main__":
         post_mapping={r"10\+\s?": str(10), r"< 1\s?": str(0)},
     )
     df = emp_length_extractor.transform(df)
-    emp_length_extractor = NumericExtractor(
+    cleaning_steps.append(emp_length_extractor)
+    term_extractor = NumericExtractor(
         field_name="term",
         regex_extraction=r"(\d+)",
     )
-    df = emp_length_extractor.transform(df)
+    cleaning_steps.append(term_extractor)
+    df = term_extractor.transform(df)
+
+    cleaning_pipeline = Pipeline(
+        steps=[
+            (f"cleaning_step_{i+1}", transformer)
+            for i, transformer in enumerate(cleaning_steps)
+        ]
+    )
 
     if args.verbose:
         logger.info("Creating target variable...")
@@ -371,6 +383,10 @@ if __name__ == "__main__":
 
     if args.verbose:
         logger.info("Exporting model artifacts...")
+    with open(
+        os.path.join(args.evaluation_artifacts_path, "cleaner.pkl"), "wb"
+    ) as file:
+        dill.dump(cleaning_pipeline, file)
     with open(
         os.path.join(args.evaluation_artifacts_path, "pd_preprocessing.pkl"), "wb"
     ) as file:

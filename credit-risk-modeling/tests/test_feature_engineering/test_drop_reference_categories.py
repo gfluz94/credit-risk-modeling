@@ -39,6 +39,7 @@ class TestReferenceCategoriesDropper(object):
         expected = dummy_input_dict.copy()
         del expected["emp_length"]
         del expected["home_ownership"]
+        expected = {k: v for k, v in expected.items()}
 
         # ASSERT
         expected == output
@@ -53,6 +54,7 @@ class TestReferenceCategoriesDropper(object):
         # EXPECTED
         expected = pd.DataFrame([dummy_input_dict])
         expected = expected.drop(columns=["emp_length", "home_ownership"])
+        expected = expected.loc[:, sorted(expected.columns)]
 
         # ASSERT
         pd.testing.assert_frame_equal(expected, output)

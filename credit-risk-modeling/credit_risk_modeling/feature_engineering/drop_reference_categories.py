@@ -56,7 +56,7 @@ class ReferenceCategoriesDropper(BaseTransformer):
             raise FieldNotFound(
                 "Some categories are not present in the final dataframe!"
             )
-        return X.drop(columns=self._reference_categories)
+        return X.loc[:, sorted(X.columns)].drop(columns=self._reference_categories)
 
     def _transform_dict(self, X: Dict[str, Any], **kwargs) -> Dict[str, Any]:
         """Transform method for python dictionary
@@ -76,4 +76,4 @@ class ReferenceCategoriesDropper(BaseTransformer):
             )
         for reference_category in self.reference_categories:
             del X[reference_category]
-        return X
+        return {feat_name: feat_value for feat_name, feat_value in sorted(X.items())}

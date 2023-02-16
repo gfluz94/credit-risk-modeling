@@ -12,3 +12,6 @@ dill==0.3.6
 jupyter==1.0.0
 statsmodels==0.13.5
 xgboost==1.7.3
+fastapi==0.92.0
+mangum==0.17.0
+httpx==0.23.3

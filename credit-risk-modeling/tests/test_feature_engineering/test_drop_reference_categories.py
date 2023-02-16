@@ -33,6 +33,7 @@ class TestReferenceCategoriesDropper(object):
         base_transformer = ReferenceCategoriesDropper(
             reference_categories=self._REFERENCE_CATEGORIES
         )
+        base_transformer.fit(pd.DataFrame([dummy_input_dict]))
         output = base_transformer.transform(dummy_input_dict)
 
         # EXPECTED
@@ -49,7 +50,7 @@ class TestReferenceCategoriesDropper(object):
         base_transformer = ReferenceCategoriesDropper(
             reference_categories=self._REFERENCE_CATEGORIES
         )
-        output = base_transformer.transform(pd.DataFrame([dummy_input_dict]))
+        output = base_transformer.fit_transform(pd.DataFrame([dummy_input_dict]))
 
         # EXPECTED
         expected = pd.DataFrame([dummy_input_dict])

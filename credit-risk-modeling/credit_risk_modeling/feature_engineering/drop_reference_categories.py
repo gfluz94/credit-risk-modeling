@@ -25,11 +25,17 @@ class ReferenceCategoriesDropper(BaseTransformer):
         """
         super(ReferenceCategoriesDropper, self).__init__()
         self._reference_categories = reference_categories
+        self._final_features = []
 
     @property
     def reference_categories(self) -> str:
         """(List[str]) List of reference categories"""
         return self._reference_categories
+
+    @property
+    def final_features(self) -> str:
+        """(List[str]) Final features, in a sorted fashion"""
+        return self._final_features
 
     def fit(self, X: pd.DataFrame, y: Optional[pd.Series] = None):
         """Fit for the transformation
@@ -38,6 +44,13 @@ class ReferenceCategoriesDropper(BaseTransformer):
             X (pd.DataFrame): Input dataframe containing features
             y (Optional[pd.Series], optional): Target variables. Defaults to None.
         """
+        if len(set(self._reference_categories) - set(X.columns)) > 0:
+            raise FieldNotFound(
+                "Some categories are not present in the final dataframe!"
+            )
+        self._final_features = sorted(
+            list(filter(lambda x: x not in self._reference_categories, X.columns))
+        )
         return self
 
     def _transform_df(self, X: pd.DataFrame) -> pd.DataFrame:
@@ -56,7 +69,7 @@ class ReferenceCategoriesDropper(BaseTransformer):
             raise FieldNotFound(
                 "Some categories are not present in the final dataframe!"
             )
-        return X.loc[:, sorted(X.columns)].drop(columns=self._reference_categories)
+        return X.loc[:, self._final_features]
 
     def _transform_dict(self, X: Dict[str, Any], **kwargs) -> Dict[str, Any]:
         """Transform method for python dictionary
@@ -76,4 +89,4 @@ class ReferenceCategoriesDropper(BaseTransformer):
             )
         for reference_category in self.reference_categories:
             del X[reference_category]
-        return {feat_name: feat_value for feat_name, feat_value in sorted(X.items())}
+        return {feat_name: X[feat_name] for feat_name in self._final_features}

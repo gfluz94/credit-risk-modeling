@@ -176,6 +176,13 @@ if __name__ == "__main__":
         default=4,
     )
     parser.add_argument(
+        "--binary-artifacts-path",
+        metavar="N",
+        type=str,
+        help="Path where binary model files should be dumped to.",
+        default="../artifacts",
+    )
+    parser.add_argument(
         "--evaluation-artifacts-path",
         metavar="N",
         type=str,
@@ -375,11 +382,11 @@ if __name__ == "__main__":
         logger.info("Exporting model artifacts...")
 
     with open(
-        os.path.join(args.evaluation_artifacts_path, "lgd_preprocessing.pkl"), "wb"
+        os.path.join(args.binary_artifacts_path, "lgd_preprocessing.pkl"), "wb"
     ) as file:
         dill.dump(preprocessing_pipeline, file)
     with open(
-        os.path.join(args.evaluation_artifacts_path, "lgd_model.pkl"), "wb"
+        os.path.join(args.binary_artifacts_path, "lgd_model.pkl"), "wb"
     ) as file:
         dill.dump(model, file)
 

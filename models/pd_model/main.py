@@ -390,17 +390,13 @@ if __name__ == "__main__":
 
     if args.verbose:
         logger.info("Exporting model artifacts...")
-    with open(
-        os.path.join(args.binary_artifacts_path, "cleaner.pkl"), "wb"
-    ) as file:
+    with open(os.path.join(args.binary_artifacts_path, "cleaner.pkl"), "wb") as file:
         dill.dump(cleaning_pipeline, file)
     with open(
         os.path.join(args.binary_artifacts_path, "pd_preprocessing.pkl"), "wb"
     ) as file:
         dill.dump(preprocessing_pipeline, file)
-    with open(
-        os.path.join(args.binary_artifacts_path, "pd_model.pkl"), "wb"
-    ) as file:
+    with open(os.path.join(args.binary_artifacts_path, "pd_model.pkl"), "wb") as file:
         dill.dump(model, file)
 
     if args.verbose:

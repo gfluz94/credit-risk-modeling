@@ -360,9 +360,7 @@ if __name__ == "__main__":
         os.path.join(args.binary_artifacts_path, "ead_preprocessing.pkl"), "wb"
     ) as file:
         dill.dump(preprocessing_pipeline, file)
-    with open(
-        os.path.join(args.binary_artifacts_path, "ead_model.pkl"), "wb"
-    ) as file:
+    with open(os.path.join(args.binary_artifacts_path, "ead_model.pkl"), "wb") as file:
         dill.dump(model, file)
 
     if args.verbose:

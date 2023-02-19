@@ -25,6 +25,7 @@ class FeatureStoreDataRequest(BaseModel):
         total_rev_hi_lim (float, optional): The revolving high credit limit. Defaults to None.
         delinq_2yrs (float, optional): Number of 30+ days past-due incidences of delinquency in the borrower's credit file for the past 2 years. Defaults to None.
         pub_rec (float, optional): Number of derogatory public records. Defaults to None.
+        open_acc (float, optional): Number of open credit lines in borrower's credit file.
         total_acc (float, optional): Total number of credit lines in borrower's credit file. Defaults to None.
     """
 
@@ -48,4 +49,5 @@ class FeatureStoreDataRequest(BaseModel):
     total_rev_hi_lim: Optional[float] = None
     delinq_2yrs: Optional[float] = None
     pub_rec: Optional[float] = None
+    open_acc: Optional[float] = None
     total_acc: Optional[float] = None

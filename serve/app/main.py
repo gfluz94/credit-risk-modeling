@@ -22,7 +22,7 @@ def home():
 
 
 @app.post("/predict")
-def predict(request: Request, features: FeatureStoreDataRequest):
+async def predict(request: Request, features: FeatureStoreDataRequest):
     if request.method == "POST":
         loan_id = features.id
         member_id = features.member_id

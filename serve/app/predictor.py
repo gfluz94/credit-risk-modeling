@@ -84,7 +84,8 @@ class PredictorService(object):
         Returns:
             pandas.DataFrame: Dataframe containing features
         """
-        return pd.DataFrame([request])
+        df = pd.DataFrame([request])
+        return df.astype(float)
 
     def _post_processor(
         self, prediction: float, target_variable: TargetVariable
@@ -111,12 +112,15 @@ class PredictorService(object):
             Dict[str, float]: Final predictions for PD, LGD, EAD and EL.
         """
         predictions = {}
+        cleaned_inputs = self._clean_request(request_inputs)
         for target in list(TargetVariable.__members__.keys()):
             preprocessor, model = self._get_models()[target]
-            cleaned_inputs = self._clean_request(request_inputs)
             preprocessed_inputs = preprocessor.transform(cleaned_inputs)
             inputs = self._convert_to_pandas(preprocessed_inputs)
-            prediction = model.predict(inputs).tolist()[0]
+            if hasattr(model, "predict_proba"):
+                prediction = model.predict_proba(inputs)[:, 1].tolist()[0]
+            else:
+                prediction = model.predict(inputs).tolist()[0]
             predictions[target.upper()] = self._post_processor(
                 prediction, target_variable=target
             )
@@ -124,4 +128,4 @@ class PredictorService(object):
             reduce(lambda a, b: a * b, predictions.values())
             * request_inputs[self._LOAN_AMOUNT_FIELD]
         )
-        return self._aggregate_categories(predictions)
+        return predictions

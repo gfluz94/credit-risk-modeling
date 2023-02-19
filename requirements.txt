@@ -15,3 +15,4 @@ xgboost==1.7.3
 fastapi==0.92.0
 mangum==0.17.0
 httpx==0.23.3
+uvicorn==0.20.0

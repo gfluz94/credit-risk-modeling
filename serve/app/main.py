@@ -2,8 +2,8 @@ from fastapi import FastAPI
 from starlette.requests import Request
 from mangum import Mangum
 
-from .data import FeatureStoreDataRequest
-from .predictor import PredictorService
+from app.data import FeatureStoreDataRequest
+from app.predictor import PredictorService
 
 MODELS_PATH = "models"
 app = FastAPI()

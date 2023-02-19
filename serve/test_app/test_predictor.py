@@ -1,4 +1,4 @@
-from serve.app.predictor import PredictorService
+from app.predictor import PredictorService
 
 
 class TestPredictorService(object):

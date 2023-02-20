@@ -226,19 +226,40 @@ It is possible to test the execution with the following example:
 
 ```sh
 curl -X 'POST' \
-  '' \
+  'https://26n08v03v2.execute-api.us-east-1.amazonaws.com/default/predict' \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
   -H 'x-api-key: <API_KEY>' \
   -d '{
-
+    "id": "sep",
+    "member_id": "mv",
+    "funded_amnt": 20_000,
+    "term": "36 months",
+    "int_rate": 10,
+    "grade": "B",
+    "emp_length": "3 years",
+    "home_ownership": "MORTGAGE",
+    "annual_inc": 80_000,
+    "issue_d": "May-15",
+    "purpose": "medical",
+    "addr_state": "PA",
+    "dti": 7.5,
+    "earliest_cr_line": "Apr-10",
+    "verification_status": "Not Verified",
+    "initial_list_status": "w",
+    "inq_last_6mths": 0,
+    "total_rev_hi_lim": 25_000,
+    "delinq_2yrs": 0,
+    "pub_rec": 0,
+    "open_acc": 5,
+    "total_acc": 20
     }'
 ```
 
 Output:
 
 ```sh
-{}
+{"id": "sep", "member_id": "mv", "funded_amnt": 20_000, "PD": 0.37194486655999126, "LGD": 1.0, "EAD": 0.8873217701911926, "EL": 6600.695548190767,}
 ```
 
 ### 3. Credit Risk Assessment

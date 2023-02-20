@@ -233,7 +233,7 @@ curl -X 'POST' \
   -d '{
     "id": "sep",
     "member_id": "mv",
-    "funded_amnt": 20_000,
+    "funded_amnt": 20000,
     "term": "36 months",
     "int_rate": 10,
     "grade": "B",
@@ -259,7 +259,7 @@ curl -X 'POST' \
 Output:
 
 ```sh
-{"id": "sep", "member_id": "mv", "funded_amnt": 20_000, "PD": 0.37194486655999126, "LGD": 1.0, "EAD": 0.8873217701911926, "EL": 6600.695548190767,}
+{"id": "sep", "member_id": "mv", "funded_amnt": 20000, "PD": 0.37194486655999126, "LGD": 1.0, "EAD": 0.8873217701911926, "EL": 6600.695548190767,}
 ```
 
 ### 3. Credit Risk Assessment

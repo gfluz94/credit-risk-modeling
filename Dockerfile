@@ -1,16 +1,8 @@
 FROM public.ecr.aws/lambda/python:3.9
 
-COPY requirements.txt /ml/
+COPY requirements.txt .
 
-COPY ./credit-risk-modeling /ml/credit-risk-modeling
-
-RUN cd /ml/credit-risk-modeling && \
-	python setup.py install --prefix=.. && \
-	cd .. && \
-    rm requirements.txt && \
-    rm -r credit-risk-modeling
-
-WORKDIR /ml/lib/python3.9/site-packages/
+RUN python3.9 -m pip install -r requirements.txt -t .
 
 COPY serve/app app
 

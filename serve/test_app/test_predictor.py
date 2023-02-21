@@ -38,7 +38,6 @@ class TestPredictorService(object):
 
         # OUTPUT
         output = self.service.predict(prediction_input_json)
-        print(output)
 
         # EXPECTED
         expected = {

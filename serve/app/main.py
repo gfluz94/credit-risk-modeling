@@ -17,7 +17,7 @@ def load_predictor():
 
 
 @app.get("/")
-def home():
+async def home():
     return "Home"
 
 

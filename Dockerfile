@@ -16,4 +16,4 @@ RUN cd credit-risk-modeling && \
     rm requirements.txt && \
     rm -r credit-risk-modeling
 
-CMD ["app.handler"]
+CMD ["main.handler"]
